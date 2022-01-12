@@ -4,7 +4,9 @@ This is a working demo. Project contains Image API storing images and thumbnails
 
 ## Get started
 
-For running this demo you need a (free) Azure account where you need to create the following 2 Azure resources.
+For running this demo you need a (free) Azure account where you need to create the following 2 Azure resources:
+- Storage account
+- Cognitive service account
 
 ### Create Storage account 
 
