@@ -107,9 +107,6 @@ namespace AzureBlob.Api.Service
 
             await blobClient.SetMetadataAsync(metadata);
 
-            // Implementation based on:
-            // https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/tutorials/storage-lab-tutorial#use-computer-vision-to-generate-metadata
-            // How to create Cognitive service: https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account?tabs=multiservice%2Cwindows
         }
 
         private async Task UploadThumbnailToContainer(FileModel model)
@@ -132,7 +129,7 @@ namespace AzureBlob.Api.Service
                 }
             }
 
-            // Documentation for BuildCommandString: https://docs.imageflow.io/querystring/introduction.html
+            
         }
     }
 }

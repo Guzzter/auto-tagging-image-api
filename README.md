@@ -2,11 +2,13 @@
 
 This is a working demo. Project contains Image API storing images and thumbnails in Azure Storage with metadata tagging from Azure Vision API
 
+![Auto tagging image api with azure!](api-screenshost.jpg "auto-tagging-image-api")
+
 ## Get started
 
 For running this demo you need a (free) Azure account where you need to create the following 2 Azure resources:
-- Storage account
-- Cognitive service account
+- [Storage account](https://docs.microsoft.com/en-us/azure/storage/common/storage-account-create?tabs=azure-portal)
+- [Cognitive service account](https://docs.microsoft.com/en-us/azure/cognitive-services/cognitive-services-apis-create-account?tabs=multiservice%2Cwindows)
 
 ### Create Storage account 
 
@@ -18,4 +20,29 @@ Used for Vision API for analyzing image conten to retrieve caption text and all 
 
 ### Running the application
 
-When running the application locally you can use the Swagger interface to upload an image (see Samples folder). After the image is uploaded you can use List API method to retrieve image data with the recognized captain and tags from Vision API.
+When running the application locally you can use the Swagger interface to upload an image (see Samples folder). After the image is uploaded you can use List API method to retrieve image data with the recognized captain and tags from Vision API. Example output:
+
+```
+{
+"caption": "a canal with buildings along it",
+"name": "Colmar.jpg",
+"tags": "building outdoor house narrow town residential",
+"thumbnail": "https://<something>.blob.core.windows.net/thumbnails/Colmar.jpg",
+"url": "https://<something>.blob.core.windows.net/photos/Colmar.jpg"
+}
+```
+
+## Used NuGet packages:
+
+I use the following packages:
+- Azure.Storage.Blobs - used for BlobContainerClient for store/retrieve images from storage account
+- Microsoft.Azure.CognitiveServices.Vision.ComputerVision - used for sending images to retrieve captain and tags
+- Imageflow.AllPlatforms - used for creating thumbnail images
+- MimeTypeMapOfficial - used for mapping extension to corresponding mime-type
+- Swashbuckle.AspNetCore - used for Swagger API documentation page
+
+## Other notes
+
+This implementation is inspired by the older Microsoft [vision tuturial](https://docs.microsoft.com/en-us/azure/cognitive-services/computer-vision/tutorials/storage-lab-tutorial#use-computer-vision-to-generate-metadata). The tutorial is using .NET core 2(?) with razer pages. I choose to modernize it and use .Net 6.0 with Swagger API.
+
+For resizing with ImageFlow, I used this documentation page: [Querystring documentation for BuildCommandString](https://docs.imageflow.io/querystring/introduction.html)
