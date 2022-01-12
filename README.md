@@ -2,7 +2,7 @@
 
 This is a working demo. Project contains Image API storing images and thumbnails in Azure Storage with metadata tagging from Azure Vision API
 
-![Auto tagging image api with azure!](api-screenshost.jpg "auto-tagging-image-api")
+![Auto tagging image api with azure!](https://github.com/Guzzter/auto-tagging-image-api/raw/master/api-screenshot.jpg "auto-tagging-image-api")
 
 ## Get started
 
