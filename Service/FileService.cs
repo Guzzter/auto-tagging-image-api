@@ -14,12 +14,13 @@ namespace AzureBlob.Api.Service
     public class FileService : IFileService
     {
         private const bool OVERWRITE_EXISTING_BLOBS = true;
-        private const string THUMB_RESIZE_CMD = "width=192&height=192&mode=both&scale=both&format=jpg";
-
+        private const int THUMB_HEIGHT = 192;
+        private const int THUMB_WIDTH = 192;
         private readonly BlobServiceClient _blobServiceClient;
         private readonly ComputerVisionClient _computerVisionClient;
         private readonly string _photosContainerName;
         private readonly string _thumbnailsContainerName;
+        private string THUMB_RESIZE_CMD = $"width={THUMB_WIDTH}&height={THUMB_HEIGHT}&mode=both&scale=both&format=jpg";
 
         public FileService(BlobServiceClient blobServiceClient,
                                 ComputerVisionClient computerVisionClient,
@@ -84,8 +85,11 @@ namespace AzureBlob.Api.Service
             var blobClient = photosContainer.GetBlobClient(model.ImageFile.FileName);
             await blobClient.UploadAsync(model.ImageFile.OpenReadStream(), OVERWRITE_EXISTING_BLOBS);
 
-            // Generate a thumbnail and save it in the "thumbnails" container
+            // Generate a 'dumb' thumbnail and save it in the "thumbnails" container
             await UploadThumbnailToContainer(model);
+
+            // Generate a AI smart cropped thumbnails and save it in the thumbnails container as '*-smartcrop.ext'
+            await UploadSmartCroppedThumbnailToContainer(model, blobClient.Uri.AbsoluteUri);
 
             // Submit the image to the Azure Computer Vision API
             await TagWithComputerVision(blobClient);
@@ -106,9 +110,32 @@ namespace AzureBlob.Api.Service
             }
 
             await blobClient.SetMetadataAsync(metadata);
-
         }
 
+        /// <summary>
+        /// Resize thumbnail with AI smart cropping and upload to Azure storage container
+        /// </summary>
+        /// <param name="model"></param>
+        /// <param name="fileUrl"></param>
+        /// <returns></returns>
+        private async Task UploadSmartCroppedThumbnailToContainer(FileModel model, string fileUrl)
+        {
+            var smartCropFileName = model.ImageFile.FileName.Insert(model.ImageFile.FileName.LastIndexOf('.'), "-smartcrop");
+            var thumbnailsContainer = _blobServiceClient.GetBlobContainerClient(_thumbnailsContainerName);
+            thumbnailsContainer.CreateIfNotExists();
+            var thumbnailClient = thumbnailsContainer.GetBlobClient(smartCropFileName);
+
+            using (Stream stream = await _computerVisionClient.GenerateThumbnailAsync(THUMB_WIDTH, THUMB_HEIGHT, fileUrl, true))
+            {
+                await thumbnailClient.UploadAsync(stream, OVERWRITE_EXISTING_BLOBS);
+            }
+        }
+
+        /// <summary>
+        /// Resize thumbnail with Imageflow and upload to Azure storage container
+        /// </summary>
+        /// <param name="model"></param>
+        /// <returns></returns>
         private async Task UploadThumbnailToContainer(FileModel model)
         {
             var thumbnailsContainer = _blobServiceClient.GetBlobContainerClient(_thumbnailsContainerName);
@@ -128,8 +155,6 @@ namespace AzureBlob.Api.Service
                     await thumbnailClient.UploadAsync(outputStream, OVERWRITE_EXISTING_BLOBS);
                 }
             }
-
-            
         }
     }
 }

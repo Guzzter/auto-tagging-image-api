@@ -1,6 +1,14 @@
 # auto-tagging-image-api
 
-This is a working demo. Project contains Image API storing images and thumbnails in Azure Storage with metadata tagging from Azure Vision API
+This is a working demo for working with Azure Cognitive Services. It analyzes uploaded images and generates a caption text and tags. As a bonus it generates a smart cropped thumbnail. Project contains Image API storing images and smart AI-cropped thumbnails in Azure Storage with metadata tagging from Azure Vision API
+
+## Smart AI cropped thumbnails vs basic cropped thumbnail
+
+Although the basic cropped thumbnail could be improved with some extra effort, example below shows power of AI. It looks at the image what the focus point should be before creating the thumbnail.
+
+![AI cropped thumbnail](https://github.com/Guzzter/auto-tagging-image-api/raw/master/example-thumbnail-generation.jpg "ai-cropped-thumbnail")
+
+## Swagger interface
 
 ![Auto tagging image api with azure!](https://github.com/Guzzter/auto-tagging-image-api/raw/master/api-screenshot.jpg "auto-tagging-image-api")
 
